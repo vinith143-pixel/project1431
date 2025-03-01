@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple Stock Data</title>
+  <!-- Bootstrap CSS link -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .card {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Stock Data</a>
+    </div>
+  </nav>
+
+  <!-- Container to display stock data -->
+  <div class="container my-4">
+    <h1>Real-time Stock Data for Apple</h1>
+    <div id="stocks" class="row">
+      <!-- Stock data will be displayed here -->
+    </div>
+
+    <!-- Cash Flow Data -->
+    <h2>Cash Flow</h2>
+    <div id="cashFlowData">
+      <!-- Cash flow data will be displayed here -->
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and Popper.js links -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  
+  <script>
+    const getData = async () => {
+      const url = 'https://real-time-finance-data.p.rapidapi.com/search?query=Apple&language=en';
+      const options = {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': 'a9a2f6b810mshb4d15524c9b67ffp10f75fjsnb8286e6cf2a0',
+          'x-rapidapi-host': 'real-time-finance-data.p.rapidapi.com'
+        }
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        const stocks = result.data.stock;
+
+        // Display stock data in cards
+        const stockContainer = document.getElementById('stocks');
+        stockContainer.innerHTML = stocks.map(stock => `
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">${stock.symbol}</h5>
+                <p class="card-text">Current Price: $${stock.price}</p>
+                <p class="card-text">Change: ${stock.change}%</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Display cash flow data
+        const cashFlowContainer = document.getElementById('cashFlowData');
+        cashFlowContainer.innerHTML = result.data.cash_flow.map(cashFlow => `
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${cashFlow.title}</h5>
+              <p class="card-text">Amount: $${cashFlow.amount}</p>
+              <p class="card-text">Date: ${cashFlow.date}</p>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Call the getData function on page load
+    getData();
+  </script>
+  <script src="./live_market.js"></script>
+</body>
+</html>

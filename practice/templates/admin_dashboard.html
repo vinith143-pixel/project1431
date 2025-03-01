@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto mt-10">
+    <h1 class="text-3xl font-bold text-center mb-6">Admin Dashboard</h1>
+    <table class="table-auto w-full bg-white rounded-lg shadow-lg">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="px-4 py-2">Name</th>
+          <th class="px-4 py-2">Mobile Number</th>
+          <th class="px-4 py-2">Email</th>
+          <th class="px-4 py-2">Password</th>
+        </tr>
+      </thead>
+      <tbody id="userTable" class="text-center">
+        <!-- Data will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Fetch user data and populate the table
+    async function fetchUsers() {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/api/users');
+        const users = response.data;
+
+        const userTable = document.getElementById('userTable');
+        userTable.innerHTML = users.map(user => `
+          <tr>
+            <td class="border px-4 py-2">${user.firstname}</td>
+            <td class="border px-4 py-2">${user.mobile}</td>
+            <td class="border px-4 py-2">${user.email}</td>
+            <td class="border px-4 py-2">${user.password}</td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+
+    // Call the function when the page loads
+    window.onload = fetchUsers;
+  </script>
+</body>
+</html>
